@@ -1,78 +1,64 @@
-#include <stdio.h>
-#include <stdarg.h>
+#include "main.h"
+#include <stdlib.h>
+#include <ctype.h>
 
 /**
- * _printf - produces output according to a format.
- * @format: a character string containing zero or more directives
- *
- * Return: the number of characters printed (excluding the null byte used to
- *         end output to strings)
+ * is_alpha - checks if a character is alphabetic
+ * @c: the character to check
+ * Return: 1 if the character is alphabetic, 0 otherwise
+ */
+int is_alpha(char c)
+{
+	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
+}
+
+static format_specifier format_specifiers[] = {
+	{"c", print_char},
+	{"s", print_string},
+	{"%", print_percent},
+	{"d", print_integer},
+	{"i", print_integer},
+	{NULL, NULL}
+};
+
+/**
+ * _printf - produces output according to a format
+ * @format: character string
+ * Return: number of characters printed
  */
 int _printf(const char *format, ...)
 {
-    va_list args;
-    int printed_chars = 0;
+	int count = 0, i;
+	format_t f = {0, -1, -1, -1, -1};
+	va_list args;
 
-    va_start(args, format);
+	/* Note: printf segfaults if format is NULL */
+	if (!format)
+		return (-1);
 
-    while (*format != '\0')
-    {
-        if (*format == '%')
-        {
-            format++;
+	va_start(args, format);
+	while (*format)
+	{
+		if (*format == '%')
+		{
+			format++;
+			f = get_format(&format);
+			if (f.flags == NULL)
+				return (-1);
 
-            switch (*format)
-            {
-                case 'c':
-                {
-                    char c = va_arg(args, int);
-                    putchar(c);
-                    printed_chars++;
-                    break;
-                }
-                case 's':
-                {
-                    char *s = va_arg(args, char *);
-                    while (*s != '\0')
-                    {
-                        putchar(*s);
-                        printed_chars++;
-                        s++;
-                    }
-                    break;
-                }
-                case '%':
-                {
-                    putchar('%');
-                    printed_chars++;
-                    break;
-                }
-                case 'd':
-                case 'i':
-                {
-                    int d = va_arg(args, int);
-                    printf("%d", d);
-                    printed_chars += snprintf(NULL, 0, "%d", d);
-                    break;
-                }
-                default:
-                {
-                    putchar(*format);
-                    printed_chars++;
-                    break;
-                }
-            }
-        }
-        else
-        {
-            putchar(*format);
-            printed_chars++;
-        }
-        format++;
-    }
-
-    va_end(args);
-    return printed_chars;
+			for (i = 0; format_specifiers[i].specifier; ++i)
+				if (f.specifier == *format_specifiers[i].specifier)
+				{
+					format_specifiers[i].function(args, f, &count);
+					format++;
+					break;
+				}
+			free(f.flags);
+		}
+		else
+			_putchar(*format++, &count);
+	}
+	va_end(args);
+	return (count);
 }
-
 
