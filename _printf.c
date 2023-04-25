@@ -2,24 +2,6 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-/**
- * is_alpha - checks if a character is alphabetic
- * @c: the character to check
- * Return: 1 if the character is alphabetic, 0 otherwise
- */
-int is_alpha(char c)
-{
-	return ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'));
-}
-
-static format_specifier format_specifiers[] = {
-	{"c", print_char},
-	{"s", print_string},
-	{"%", print_percent},
-	{"d", print_integer},
-	{"i", print_integer},
-	{NULL, NULL}
-};
 
 /**
  * _printf - produces output according to a format
