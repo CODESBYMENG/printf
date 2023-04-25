@@ -1,6 +1,7 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <stdarg.h>
+
 /**
  * _printf - Produces output according to a format.
  * @format: A character string composed of zero or more directives
@@ -13,7 +14,9 @@ int _printf(const char *format, ...)
     va_list args;
     int count = 0, i = 0, j = 0;
     char *str_arg, ch;
+
     va_start(args, format);
+
     while (format && format[i])
     {
         if (format[i] == '%')
@@ -49,9 +52,12 @@ int _printf(const char *format, ...)
         {
             count += write(1, &format[i], 1);
         }
+
         i++;
     }
+
     va_end(args);
+
     return count;
 }
 
