@@ -3,6 +3,14 @@
 
 #include <stdarg.h>
 
+#include <stddef.h> /* for NULL */
+
+/* Function prototypes */
+int _printf(const char *format, ...);
+int parse_format(const char *format, va_list args);
+/* ... */
+
+
 int _printf(const char *format, ...);
 int print_c(va_list args);
 int print_s(va_list args);
