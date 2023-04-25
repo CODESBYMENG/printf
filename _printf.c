@@ -1,10 +1,9 @@
-#include <stdio.h>
-#include <stdarg.h>
 /**
- * @brief _printf - function to print based on the format specifier
- * @param format : takes a format specifier
- * @param ...
- * @return int
+ * @brief Produces output according to a format
+ * 
+ * @param format a character string composed of zero or more directives
+ * @param ... additional arguments to be printed according to the format string
+ * @return the number of characters printed (excluding the null byte used to end output to strings)
  */
 int _printf(const char *format, ...)
 {
