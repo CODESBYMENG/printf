@@ -1,5 +1,4 @@
-#include <unistd.h>
-#include <stdlib.h>
+#include <stdio.h>
 #include <stdarg.h>
 
 /**
@@ -13,7 +12,6 @@ int _printf(const char *format, ...)
 {
     va_list args;
     int printed_chars = 0;
-    char *str;
 
     va_start(args, format);
 
@@ -27,89 +25,47 @@ int _printf(const char *format, ...)
             {
                 case 'c':
                 {
-                    char c = (char) va_arg(args, int);
-                    write(1, &c, 1);
+                    char c = va_arg(args, int);
+                    putchar(c);
                     printed_chars++;
                     break;
                 }
                 case 's':
                 {
-                    str = va_arg(args, char *);
-                    if (str == NULL)
+                    char *s = va_arg(args, char *);
+                    while (*s != '\0')
                     {
-                        write(1, "(null)", 6);
-                        printed_chars += 6;
-                    }
-                    else
-                    {
-                        while (*str != '\0')
-                        {
-                            write(1, str, 1);
-                            printed_chars++;
-                            str++;
-                        }
+                        putchar(*s);
+                        printed_chars++;
+                        s++;
                     }
                     break;
                 }
                 case '%':
                 {
-                    write(1, "%", 1);
+                    putchar('%');
                     printed_chars++;
                     break;
                 }
                 case 'd':
                 case 'i':
                 {
-                    int num = va_arg(args, int);
-                    int num_copy = num;
-                    int num_len = 0;
-                    if (num == 0)
-                    {
-                        write(1, "0", 1);
-                        printed_chars++;
-                    }
-                    if (num < 0)
-                    {
-                        write(1, "-", 1);
-                        printed_chars++;
-                        num = -num;
-                        num_copy = -num_copy;
-                    }
-                    while (num > 0)
-                    {
-                        num /= 10;
-                        num_len++;
-                    }
-                    while (num_len > 0)
-                    {
-                        num_len--;
-                        int div = 1;
-                        int i = num_len;
-                        while (i > 0)
-                        {
-                            div *= 10;
-                            i--;
-                        }
-                        int digit = num_copy / div;
-                        char c = digit + '0';
-                        write(1, &c, 1);
-                        printed_chars++;
-                        num_copy %= div;
-                    }
+                    int d = va_arg(args, int);
+                    printf("%d", d);
+                    printed_chars += snprintf(NULL, 0, "%d", d);
                     break;
                 }
                 default:
                 {
-                    write(1, "%", 1);
+                    putchar(*format);
                     printed_chars++;
-                    format--;
                     break;
                 }
             }
         }
         else
         {
-            write(1, format, 1);
+            putchar(*format);
             printed_chars++;
         }
         format++;
@@ -118,4 +74,3 @@ int _printf(const char *format, ...)
     va_end(args);
     return printed_chars;
 }
-
