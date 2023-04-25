@@ -1,46 +1,121 @@
-#include "main.h"
+#include <unistd.h>
 #include <stdlib.h>
-#include <ctype.h>
-
+#include <stdarg.h>
 
 /**
- * _printf - produces output according to a format
- * @format: character string
- * Return: number of characters printed
+ * _printf - produces output according to a format.
+ * @format: a character string containing zero or more directives
+ *
+ * Return: the number of characters printed (excluding the null byte used to
+ *         end output to strings)
  */
 int _printf(const char *format, ...)
 {
-	int count = 0, i;
-	format_t f = {0, -1, -1, -1, -1};
-	va_list args;
+    va_list args;
+    int printed_chars = 0;
+    char *str;
 
-	/* Note: printf segfaults if format is NULL */
-	if (!format)
-		return (-1);
+    va_start(args, format);
 
-	va_start(args, format);
-	while (*format)
-	{
-		if (*format == '%')
-		{
-			format++;
-			f = get_format(&format);
-			if (f.flags == NULL)
-				return (-1);
+    while (*format != '\0')
+    {
+        if (*format == '%')
+        {
+            format++;
 
-			for (i = 0; format_specifiers[i].specifier; ++i)
-				if (f.specifier == *format_specifiers[i].specifier)
-				{
-					format_specifiers[i].function(args, f, &count);
-					format++;
-					break;
-				}
-			free(f.flags);
-		}
-		else
-			_putchar(*format++, &count);
-	}
-	va_end(args);
-	return (count);
+            switch (*format)
+            {
+                case 'c':
+                {
+                    char c = (char) va_arg(args, int);
+                    write(1, &c, 1);
+                    printed_chars++;
+                    break;
+                }
+                case 's':
+                {
+                    str = va_arg(args, char *);
+                    if (str == NULL)
+                    {
+                        write(1, "(null)", 6);
+                        printed_chars += 6;
+                    }
+                    else
+                    {
+                        while (*str != '\0')
+                        {
+                            write(1, str, 1);
+                            printed_chars++;
+                            str++;
+                        }
+                    }
+                    break;
+                }
+                case '%':
+                {
+                    write(1, "%", 1);
+                    printed_chars++;
+                    break;
+                }
+                case 'd':
+                case 'i':
+                {
+                    int num = va_arg(args, int);
+                    int num_copy = num;
+                    int num_len = 0;
+                    if (num == 0)
+                    {
+                        write(1, "0", 1);
+                        printed_chars++;
+                    }
+                    if (num < 0)
+                    {
+                        write(1, "-", 1);
+                        printed_chars++;
+                        num = -num;
+                        num_copy = -num_copy;
+                    }
+                    while (num > 0)
+                    {
+                        num /= 10;
+                        num_len++;
+                    }
+                    while (num_len > 0)
+                    {
+                        num_len--;
+                        int div = 1;
+                        int i = num_len;
+                        while (i > 0)
+                        {
+                            div *= 10;
+                            i--;
+                        }
+                        int digit = num_copy / div;
+                        char c = digit + '0';
+                        write(1, &c, 1);
+                        printed_chars++;
+                        num_copy %= div;
+                    }
+                    break;
+                }
+                default:
+                {
+                    write(1, "%", 1);
+                    printed_chars++;
+                    format--;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            write(1, format, 1);
+            printed_chars++;
+        }
+        format++;
+    }
+
+    va_end(args);
+    return printed_chars;
 }
 
