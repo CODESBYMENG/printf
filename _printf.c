@@ -1,8 +1,5 @@
-#include "main.h"
-#include <unistd.h>
-#include <stdlib.h>
-#include <stdarg.h>
 #include <stdio.h>
+#include <stdarg.h>
 
 /**
  * _printf - Produces output according to a format.
@@ -17,7 +14,6 @@ int _printf(const char *format, ...)
     int count = 0, i = 0, j = 0;
     char *str_arg, ch;
     int int_arg;
-    char int_str[12];  // Enough space to hold any 32-bit integer
 
     va_start(args, format);
 
@@ -30,42 +26,31 @@ int _printf(const char *format, ...)
             {
                 case 'c':
                     ch = (char)va_arg(args, int);
-                    count += write(1, &ch, 1);
+                    count += printf("%c", ch);
                     break;
                 case 's':
                     str_arg = va_arg(args, char *);
                     if (str_arg == NULL)
                         str_arg = "(null)";
-                    while (str_arg[j])
-                    {
-                        count += write(1, &str_arg[j], 1);
-                        j++;
-                    }
-                    j = 0;
+                    count += printf("%s", str_arg);
+                    break;
+                case '%':
+                    count += printf("%%");
                     break;
                 case 'd':
                 case 'i':
                     int_arg = va_arg(args, int);
-                    sprintf(int_str, "%d", int_arg);
-                    while (int_str[j])
-                    {
-                        count += write(1, &int_str[j], 1);
-                        j++;
-                    }
-                    j = 0;
-                    break;
-                case '%':
-                    count += write(1, &format[i], 1);
+                    count += printf("%d", int_arg);
                     break;
                 default:
-                    count += write(1, "%", 1);
-                    count += write(1, &format[i], 1);
+                    count += printf("%%");
+                    count += printf("%c", format[i]);
                     break;
             }
         }
         else
         {
-            count += write(1, &format[i], 1);
+            count += printf("%c", format[i]);
         }
 
         i++;
