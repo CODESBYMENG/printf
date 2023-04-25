@@ -1,21 +1,23 @@
-#ifndef _MAIN_H_
-#define _MAIN_H_
+#ifndef MAIN_H
+#define MAIN_H
 
 #include <stdarg.h>
-#include <unistd.h>
 #include <stdlib.h>
 
 int _printf(const char *format, ...);
-int print_char(va_list arg_list);
-int print_string(va_list arg_list);
-int print_int(va_list arg_list);
-int print_uint(va_list arg_list);
-int print_uint_to_octal(va_list arg_list);
-int print_uint_to_hex(va_list arg_list, char format_specifier);
-int print_uint_to_binary(va_list arg_list);
-int print_custom_string(va_list arg_list);
-int print_pointer(va_list arg_list);
-int print_rev(va_list arg_list);
-int print_rot13(va_list arg_list);
+int _putchar(char c);
+unsigned int print_uint_to_octal(unsigned int n);
+unsigned int print_uint_to_hex(unsigned int n, int lowercase);
+unsigned int print_uint_to_binary(unsigned int n);
+int print_char(va_list args);
+int print_str(va_list args);
+int print_int(va_list args);
+int print_unsigned_int(va_list args);
+int print_octal(va_list args);
+int print_hex(va_list args, int lowercase);
+int print_pointer(va_list args);
+int print_rot13(va_list args);
+int print_rev(va_list args);
+int print_custom(va_list args, char c);
 
-#endif /* _MAIN_H_ */
+#endif /* MAIN_H */
