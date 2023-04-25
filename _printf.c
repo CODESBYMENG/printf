@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <stdarg.h>
-
+/**
+ * _printf - Entry point
+ * Description: conversion specifiers
+ * Return: count
+ */
 int _printf(const char *format, ...)
 {
     va_list args;
