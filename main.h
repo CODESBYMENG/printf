@@ -2,41 +2,30 @@
 #define MAIN_H
 
 #include <stdarg.h>
+#include <stddef.h>
 
-#include <stddef.h> /* for NULL */
-
-/* Function prototypes */
+int _putchar(char c);
 int _printf(const char *format, ...);
-int parse_format(const char *format, va_list args);
-/* ... */
 
+/* Functions for handling different format specifiers */
+int print_char(va_list args);
+int print_string(va_list args);
+int print_percent(va_list args);
+int print_int(va_list args);
+int print_unsigned(va_list args);
+int print_octal(va_list args);
+int print_hex(va_list args);
+int print_hex_upper(va_list args);
+int print_binary(va_list args);
 
-int _printf(const char *format, ...);
-int print_c(va_list args);
-int print_s(va_list args);
-int print_i(va_list args);
-int print_b(va_list args);
-int print_u(va_list args);
-int print_o(va_list args);
-int print_x(va_list args);
-int print_X(va_list args);
-int print_S(va_list args);
-int print_p(va_list args);
-int print_r(va_list args);
-int print_R(va_list args);
+/* Utility function */
+int num_len(unsigned int num, int base);
 
-/**
- * struct conversion_specifier - Struct for conversion specifiers
- * @specifier: The conversion specifier
- * @f: The function associated with the conversion specifier
- *
- * Description: Contains the conversion specifier and the function pointer
- * to the function that handles the conversion.
- */
-typedef struct conversion_specifier
+/* Struct to hold a format specifier and its corresponding function */
+typedef struct format_specifier
 {
-    char specifier;
-    int (*f)(va_list);
-} conversion_t;
+    char spec;
+    int (*func)(va_list);
+} format_t;
 
 #endif /* MAIN_H */

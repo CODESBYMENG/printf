@@ -1,71 +1,116 @@
 #include "main.h"
 
 /**
- * parse_format - parses the format string and handles format specifiers
- * @format: character string
- * @args: va_list containing arguments to be printed
+ * parse_format - parses format string and prints arguments
+ * @format: format string
+ * @args: list of arguments
  *
  * Return: number of characters printed
  */
 int parse_format(const char *format, va_list args)
 {
-	char ch;
-	int i = 0, printed_chars = 0;
+	char *str_arg;
+	int i, j, len = 0;
 
-	while (format[i])
+	for (i = 0; format && format[i]; i++)
 	{
 		if (format[i] == '%')
 		{
 			i++;
-			ch = format[i];
-
-			if (ch == 'c')
-				printed_chars += print_char(args);
-
-			else if (ch == 's')
-				printed_chars += print_string(args);
-
-			else if (ch == 'd' || ch == 'i')
-				printed_chars += print_int(args);
-
-			else if (ch == 'b')
-				printed_chars += print_binary(args);
-
-			else if (ch == 'u')
-				printed_chars += print_unsigned(args);
-
-			else if (ch == 'o')
-				printed_chars += print_octal(args);
-
-			else if (ch == 'x' || ch == 'X')
-				printed_chars += print_hex(args, ch);
-
-			else if (ch == 'p')
-				printed_chars += print_pointer(args);
-
-			else if (ch == '%')
-				printed_chars += print_percent();
-
-			else if (ch == 'r')
-				printed_chars += print_rev_string(args);
-
-			else if (ch == 'R')
-				printed_chars += print_rot13(args);
-
+			while (format[i] == ' ')
+				i++;
+			if (!format[i])
+				return (-1);
+			if (format[i] == '%')
+				len += _putchar('%');
+			else if (format[i] == 'c')
+				len += _putchar(va_arg(args, int));
+			else if (format[i] == 's')
+			{
+				str_arg = va_arg(args, char *);
+				if (!str_arg)
+					str_arg = "(null)";
+				len += _puts(str_arg);
+			}
+			else if (format[i] == 'd' || format[i] == 'i')
+				len += print_number(args, 10, 1);
+			else if (format[i] == 'b')
+				len += print_number(args, 2, 0);
+			else if (format[i] == 'u')
+				len += print_number(args, 10, 0);
+			else if (format[i] == 'o')
+				len += print_number(args, 8, 0);
+			else if (format[i] == 'x' || format[i] == 'X')
+				len += print_hex(args, format[i]);
+			else if (format[i] == 'p')
+				len += print_address(args);
 			else
 			{
-				printed_chars += _putchar('%');
+				len += _putchar('%');
 				if (format[i] != '\0')
-					printed_chars += _putchar(format[i]);
+					len += _putchar(format[i]);
 				else
 					return (-1);
 			}
 		}
 		else
-			printed_chars += _putchar(format[i]);
-
-		i++;
+			len += _putchar(format[i]);
 	}
+	return (len);
+}
 
-	return (printed_chars);
+
+/**
+ * print_hex - prints a number in hexadecimal format
+ * @args: va_list containing the number to print
+ * @format: format specifier ('x' or 'X')
+ *
+ * Return: number of characters printed
+ */
+int print_hex(va_list args, char format)
+{
+    unsigned int num = va_arg(args, unsigned int);
+    char hex[100];
+    int i = 0, len = 0;
+
+    if (format == 'x')
+    {
+        while (num)
+        {
+            int temp = 0;
+            temp = num % 16;
+            if (temp < 10)
+                hex[i] = temp + 48;
+            else
+                hex[i] = temp + 87;
+            num = num / 16;
+            i++;
+        }
+        if (i == 0)
+            hex[i++] = '0';
+
+        while (i--)
+            len += _putchar(hex[i]);
+    }
+    else if (format == 'X')
+    {
+        while (num)
+        {
+            int temp = 0;
+            temp = num % 16;
+            if (temp < 10)
+                hex[i] = temp + 48;
+            else
+                hex[i] = temp + 55;
+            num = num / 16;
+            i++;
+        }
+        if (i == 0)
+            hex[i++] = '0';
+
+        while (i--)
+            len += _putchar(hex[i]);
+    }
+
+    return (len);
 }
