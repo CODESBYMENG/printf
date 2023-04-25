@@ -1,19 +1,20 @@
+#include <stdio.h>
+#include <stdarg.h>
 /**
  * @brief Produces output according to a format
  * 
- * @param format a character string composed of zero or more directives
- * @param ... additional arguments to be printed according to the format string
- * @return the number of characters printed (excluding the null byte used to end output to strings)
+ * @param format a character string composed
+ * of zero or more directives
+ * @param ... additional arguments to be printed
+ * according to the format string
+ * @return the number of characters printed (excluding
+ * the null byte used to end output to strings)
  */
-#include <stdio.h>
-#include <stdarg.h>
-
 int _printf(const char *format, ...)
 {
     va_list args;
     int count = 0;
     char ch;
-
     va_start(args, format);
 
     while (*format)
