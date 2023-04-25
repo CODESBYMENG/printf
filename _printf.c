@@ -5,6 +5,9 @@
  * @param ... additional arguments to be printed according to the format string
  * @return the number of characters printed (excluding the null byte used to end output to strings)
  */
+#include <stdio.h>
+#include <stdarg.h>
+
 int _printf(const char *format, ...)
 {
     va_list args;
@@ -27,6 +30,10 @@ int _printf(const char *format, ...)
                     break;
                 case 's':
                     count += printf("%s", va_arg(args, char *));
+                    break;
+                case 'd':
+                case 'i':
+                    count += printf("%d", va_arg(args, int));
                     break;
                 case '%':
                     putchar('%');
