@@ -1,63 +1,77 @@
-#include "main.h"
 #include <stdio.h>
 #include <stdarg.h>
 
 /**
- * _printf - Produces output according to a format.
- * @format: A character string composed of zero or more directives
- * that produces output when the directive is encountered.
- * Return: The number of characters printed (excluding the null byte used
- * to end output to strings).
+ * _printf - produces output according to a format.
+ * @format: a character string containing zero or more directives
+ *
+ * Return: the number of characters printed (excluding the null byte used to
+ *         end output to strings)
  */
 int _printf(const char *format, ...)
 {
     va_list args;
-    int count = 0, i = 0, j = 0;
-    char *str_arg, ch;
-    int int_arg;
+    int printed_chars = 0;
 
     va_start(args, format);
 
-    while (format && format[i])
+    while (*format != '\0')
     {
-        if (format[i] == '%')
+        if (*format == '%')
         {
-            i++;
-            switch (format[i])
+            format++;
+
+            switch (*format)
             {
                 case 'c':
-                    ch = (char)va_arg(args, int);
-                    count += printf("%c", ch);
+                {
+                    char c = va_arg(args, int);
+                    putchar(c);
+                    printed_chars++;
                     break;
+                }
                 case 's':
-                    str_arg = va_arg(args, char *);
-                    if (str_arg == NULL)
-                        str_arg = "(null)";
-                    count += printf("%s", str_arg);
+                {
+                    char *s = va_arg(args, char *);
+                    while (*s != '\0')
+                    {
+                        putchar(*s);
+                        printed_chars++;
+                        s++;
+                    }
                     break;
+                }
                 case '%':
-                    count += printf("%%");
+                {
+                    putchar('%');
+                    printed_chars++;
                     break;
+                }
                 case 'd':
                 case 'i':
-                    int_arg = va_arg(args, int);
-                    count += printf("%d", int_arg);
+                {
+                    int d = va_arg(args, int);
+                    printf("%d", d);
+                    printed_chars += snprintf(NULL, 0, "%d", d);
                     break;
+                }
                 default:
-                    count += printf("%%");
-                    count += printf("%c", format[i]);
+                {
+                    putchar(*format);
+                    printed_chars++;
                     break;
+                }
             }
         }
         else
         {
-            count += printf("%c", format[i]);
+            putchar(*format);
+            printed_chars++;
         }
-
-        i++;
+        format++;
     }
 
     va_end(args);
-
-    return count;
+    return printed_chars;
 }
+
